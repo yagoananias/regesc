@@ -1,18 +1,21 @@
 package br.com.yagoananias.regesc;
 
 import br.com.yagoananias.regesc.orm.Professor;
-import br.com.yagoananias.regesc.repository.IProfessorRepository;
+import br.com.yagoananias.regesc.service.CrudProfessorService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.Scanner;
+
 @SpringBootApplication
 public class RegescApplication implements CommandLineRunner {
 
-	private IProfessorRepository repository;
+	private CrudProfessorService professorService;
 
-	public RegescApplication(IProfessorRepository repository) {
-		this.repository = repository;
+	// os obj passados sao injetados autom pelo spring (@service)
+	public RegescApplication(CrudProfessorService professorService) {
+		this.professorService = professorService;
 	}
 
 	public static void main(String[] args) {
@@ -21,14 +24,26 @@ public class RegescApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Professor professor = new Professor("Andressa", "xpto");
+		Boolean isTrue = true;
+		Scanner scanner = new Scanner(System.in);
 
-		System.out.println("Professor antes da persistencia:");
-		System.out.println(professor);
 
-		this.repository.save(professor);
+		while (isTrue) {
+			System.out.println("Qual entidade você deseja interagir?");
+			System.out.println("0 - Sair");
+			System.out.println("1 - Professor");
 
-		System.out.println("Professor depois do save");
-		System.out.println(professor.toString());
+			int opcao = scanner.nextInt();
+
+			switch (opcao) {
+				case 1:
+					this.professorService.menu(scanner);
+					break;
+				default:
+					isTrue = false;
+					break;
+			}
+		}
+		System.out.println("Fim do programa");
 	}
 }
