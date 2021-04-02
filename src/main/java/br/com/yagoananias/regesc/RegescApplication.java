@@ -1,6 +1,7 @@
 package br.com.yagoananias.regesc;
 
 import br.com.yagoananias.regesc.orm.Professor;
+import br.com.yagoananias.regesc.service.CrudAlunoService;
 import br.com.yagoananias.regesc.service.CrudDisciplinaService;
 import br.com.yagoananias.regesc.service.CrudProfessorService;
 import org.springframework.boot.CommandLineRunner;
@@ -14,11 +15,13 @@ public class RegescApplication implements CommandLineRunner {
 
 	private CrudProfessorService professorService;
 	private CrudDisciplinaService disciplinaService;
+	private CrudAlunoService alunoService;
 
 	// os obj passados sao injetados autom pelo spring (@service)
-	public RegescApplication(CrudProfessorService professorService, CrudDisciplinaService disciplinaService) {
+	public RegescApplication(CrudProfessorService professorService, CrudDisciplinaService disciplinaService, CrudAlunoService alunoService) {
 		this.professorService = professorService;
 		this.disciplinaService = disciplinaService;
+		this.alunoService = alunoService;
 	}
 
 	public static void main(String[] args) {
@@ -36,6 +39,7 @@ public class RegescApplication implements CommandLineRunner {
 			System.out.println("0 - Sair");
 			System.out.println("1 - Professor");
 			System.out.println("2 - Disciplina");
+			System.out.println("3 - Aluno");
 
 			int opcao = scanner.nextInt();
 
@@ -44,6 +48,9 @@ public class RegescApplication implements CommandLineRunner {
 					this.professorService.menu(scanner);
 					break;
 				case 2:
+					this.disciplinaService.menu(scanner);
+					break;
+				case 3:
 					this.disciplinaService.menu(scanner);
 					break;
 				default:

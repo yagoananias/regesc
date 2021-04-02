@@ -1,22 +1,26 @@
 package br.com.yagoananias.regesc.service;
 
+import br.com.yagoananias.regesc.orm.Aluno;
 import br.com.yagoananias.regesc.orm.Disciplina;
 import br.com.yagoananias.regesc.orm.Professor;
+import br.com.yagoananias.regesc.repository.IAlunoRepository;
 import br.com.yagoananias.regesc.repository.IDisciplinaRepository;
 import br.com.yagoananias.regesc.repository.IProfessorRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 @Service
 public class CrudDisciplinaService {
     private IDisciplinaRepository disciplinaRepository;
-    private IProfessorRepository professorRepository; //dependencia da classe CrudProfessorService
+    private IProfessorRepository professorRepository;
+    private IAlunoRepository alunoRepository;
 
     //Spring cria aut um obj com a interface IProfessorRepository
     // e injeta no construtor da classe atual ==> Injeção de dependencia
-    public CrudDisciplinaService(IDisciplinaRepository disciplinaRepository, IProfessorRepository professorRepository) {
+    public CrudDisciplinaService(IDisciplinaRepository disciplinaRepository,
+                                 IProfessorRepository professorRepository,
+                                 IAlunoRepository alunoRepository) {
         this.disciplinaRepository = disciplinaRepository;
         this.professorRepository = professorRepository;
     }
@@ -31,6 +35,7 @@ public class CrudDisciplinaService {
             System.out.println("2 - Atualizar uma Disciplina");
             System.out.println("3 - Visualizar Disciplinas");
             System.out.println("4 - Deletar uma Disciplina");
+            System.out.println("5 - Matricular Alunos");
 
             int opcao = scanner.nextInt();
 
@@ -47,12 +52,54 @@ public class CrudDisciplinaService {
                 case 4:
                     this.deletar(scanner);
                     break;
+                case 5:
+                    this.matricularAlunos(scanner);
+                    break;
                 default:
                     isTrue = false;
                     break;
             }
         }
         System.out.println();
+    }
+
+    private void matricularAlunos(Scanner scanner) {
+        System.out.println("Digite o id da disciplina para matricular alunos: ");
+        Long id = scanner.nextLong();
+
+        Optional<Disciplina> optionalDisciplina = this.disciplinaRepository.findById(id);
+
+        if (optionalDisciplina.isPresent()) {
+            Disciplina disciplina = optionalDisciplina.get();
+            Set<Aluno> novosAlunos = this.matricular(scanner);
+            disciplina.getAlunos().addAll(novosAlunos);
+            this.disciplinaRepository.save(disciplina);
+        } else {
+            System.out.println("O id da disciplina infomado: " + id + " é inválido!\n");
+        }
+    }
+
+    private Set<Aluno> matricular(Scanner scanner) {
+        Boolean isTrue = true;
+        Set<Aluno> alunos = new HashSet<>();
+
+        while (isTrue) {
+            System.out.println("O id do aluno a ser matriculado(Digite 0 para sair): ");
+            Long alunoId = scanner.nextLong();
+
+            if (alunoId > 0) {
+                System.out.println("alunoId: " + alunoId);
+                Optional<Aluno> optional = this.alunoRepository.findById(alunoId);
+                if (optional.isPresent()) {
+                    alunos.add(optional.get());
+                } else {
+                    System.out.println("Nenhum aluno encontrado com o id: " + alunoId + " !");
+                }
+            } else {
+                isTrue = false;
+            }
+        }
+        return alunos;
     }
 
     private void cadastrar(Scanner scanner) {
@@ -101,6 +148,8 @@ public class CrudDisciplinaService {
 
             if (optionalProfessor.isPresent()) {
                 Professor professor = optionalProfessor.get();
+
+                Set<Aluno> alunos = this.matricular(scanner);
 
                 disciplina.setNome(nome);
                 disciplina.setSemestre(semestre);

@@ -1,6 +1,7 @@
 package br.com.yagoananias.regesc.orm;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "disciplinas")
@@ -15,6 +16,12 @@ public class Disciplina {
     @ManyToOne
     @JoinColumn(name = "professor_id", nullable = true)
     private Professor professor;
+
+    @ManyToMany
+    @JoinTable(name = "disciplinas_alunos",
+            joinColumns = @JoinColumn(name = "disciplina_fk"),
+            inverseJoinColumns = @JoinColumn(name = "aluno_fk"))
+    Set<Aluno> alunos;
 
     @Deprecated
     public Disciplina() {
@@ -54,6 +61,14 @@ public class Disciplina {
         this.professor = professor;
     }
 
+    public Set<Aluno> getAlunos() {
+        return alunos;
+    }
+
+    public void setAlunos(Set<Aluno> alunos) {
+        this.alunos = alunos;
+    }
+
     @Override
     public String toString() {
         return "Disciplina{" +
@@ -61,6 +76,7 @@ public class Disciplina {
                 ", nome='" + nome + '\'' +
                 ", semestre=" + semestre +
                 ", professor=" + professor +
+                ", alunos=" + alunos +
                 '}';
     }
 }

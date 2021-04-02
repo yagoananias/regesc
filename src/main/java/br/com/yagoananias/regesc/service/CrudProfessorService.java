@@ -4,6 +4,7 @@ import br.com.yagoananias.regesc.orm.Disciplina;
 import br.com.yagoananias.regesc.orm.Professor;
 import br.com.yagoananias.regesc.repository.IProfessorRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.Scanner;
@@ -17,7 +18,7 @@ public class CrudProfessorService {
     public CrudProfessorService(IProfessorRepository professorRepository) {
         this.professorRepository = professorRepository;
     }
-
+    @Transactional
     public void menu(Scanner scanner) {
         Boolean isTrue = true;
 
@@ -111,6 +112,7 @@ public class CrudProfessorService {
         System.out.println("Professor deletado com sucesso!");
     }
 
+    @Transactional
     private void visualizarProfessor(Scanner scanner) {
         System.out.println("Id do Professor: ");
         Long id =  scanner.nextLong();

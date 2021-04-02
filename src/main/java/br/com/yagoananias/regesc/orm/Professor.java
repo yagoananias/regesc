@@ -53,6 +53,15 @@ public class Professor {
         this.disciplinas = disciplinas;
     }
 
+    //On remove set to null
+    @PreRemove
+    public void atualizaDisciplinasOnRemove() {
+        System.out.println("****atualizaDisciplinasOnRemove****");
+        for (Disciplina disciplina : this.getDisciplinas()) {
+            disciplina.setProfessor(null);
+        }
+    }
+
     @Override
     public String toString() {
         return "Professor{" +
