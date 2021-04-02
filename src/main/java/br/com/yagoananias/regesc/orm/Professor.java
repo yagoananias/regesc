@@ -1,6 +1,7 @@
 package br.com.yagoananias.regesc.orm;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "professores")
@@ -12,6 +13,9 @@ public class Professor {
     private String nome;
     @Column(nullable = false, unique = true)
     private String prontuario;
+
+    @OneToMany(mappedBy = "professor")
+    private List<Disciplina> disciplinas;
 
     @Deprecated
     public Professor() {}
