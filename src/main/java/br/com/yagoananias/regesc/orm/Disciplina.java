@@ -12,18 +12,19 @@ public class Disciplina {
     private String nome;
     private Integer semestre;
 
+    @ManyToOne
+    @JoinColumn(name = "professor_id", nullable = true)
+    private Professor professor;
+
     @Deprecated
     public Disciplina() {
     }
 
-    public Disciplina(String nome, Integer semestre) {
+    public Disciplina(String nome, Integer semestre, Professor professor) {
         this.nome = nome;
         this.semestre = semestre;
+        this.professor = professor;
     }
-
-    @ManyToOne
-    @JoinColumn(name = "professor_id", nullable = true)
-    private Professor professor;
 
     public Long getId() {
         return id;
@@ -43,5 +44,23 @@ public class Disciplina {
 
     public void setSemestre(Integer semestre) {
         this.semestre = semestre;
+    }
+
+    public Professor getProfessor() {
+        return professor;
+    }
+
+    public void setProfessor(Professor professor) {
+        this.professor = professor;
+    }
+
+    @Override
+    public String toString() {
+        return "Disciplina{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", semestre=" + semestre +
+                ", professor=" + professor +
+                '}';
     }
 }
